@@ -45,7 +45,7 @@ public class SignInController {
             return "redirect:/home";
         } else {
             model.addAttribute("error", "Invalid credentials");
-            return "redirect:/signIn";
+            return "sign-in";
         }
     }
     @PostMapping("/logout")
