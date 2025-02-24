@@ -1,6 +1,0 @@
-
-GET https://api.openweathermap.org/data/2.5/weather?lat=55.7558&lon=37.6173&appid=67162fe1b1968daec0bf7da6f19f6710&units=metric&lang=ru
-####
-GET https://api.openweathermap.org/data/2.5/weather?q=Moscow&limit=5&appid=67162fe1b1968daec0bf7da6f19f6710&units=metric&lang=ru
-###
-https://api.openweathermap.org/geo/1.0/direct?q=Moscow&limit=5&appid=67162fe1b1968daec0bf7da6f19f6710&units=metric&lang=ru
