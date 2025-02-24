@@ -1,14 +1,13 @@
 package com.service;
 
 import com.dto.response.LocationResponseDto;
-
 import com.dto.response.WeatherResponseDto;
 import com.entity.Location;
+import com.exception.InvalidApiRequestException;
 import com.exception.JsonDeserializationException;
 import com.exception.WeatherApiException;
-import com.exception.InvalidApiRequestException;
-
 import io.github.cdimascio.dotenv.Dotenv;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -22,20 +21,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.List;
 
 @Service
-public class RestTemplateWeatherApiClientService implements WeatherApiClientService{
+@RequiredArgsConstructor
+public class RestTemplateWeatherApiClientService implements WeatherApiClientService {
     private static final Dotenv dotenv = Dotenv.load();
     private static final String API_KEY = dotenv.get("API_KEY");
+    private final RestTemplate restTemplate;
 
     public WeatherResponseDto getWeatherForLocation(Location location) {
-        String url = UriComponentsBuilder.fromHttpUrl("https://api.openweathermap.org/data/2.5/weather")
-                .queryParam("lon", location.getLongitude())
-                .queryParam("lat", location.getLatitude())
-                .queryParam("appid", API_KEY)
-                .queryParam("units", "metric")
-                .toUriString();
-
-        RestTemplate restTemplate = new RestTemplate();
-
+        String url = UriComponentsBuilder.fromHttpUrl("https://api.openweathermap.org/data/2.5/weather").queryParam("lon", location.getLongitude()).queryParam("lat", location.getLatitude()).queryParam("appid", API_KEY).queryParam("units", "metric").toUriString();
         try {
             ResponseEntity<WeatherResponseDto> response = restTemplate.getForEntity(url, WeatherResponseDto.class);
             return response.getBody();
@@ -49,31 +42,18 @@ public class RestTemplateWeatherApiClientService implements WeatherApiClientServ
     }
 
     public List<LocationResponseDto> getLocationsByName(String location) {
-        String url = UriComponentsBuilder.fromHttpUrl("https://api.openweathermap.org/geo/1.0/direct")
-                .queryParam("q", location)
-                .queryParam("limit", 5)
-                .queryParam("appid", API_KEY)
-                .toUriString();
-
-        RestTemplate restTemplate = new RestTemplate();
-
+        String url = UriComponentsBuilder.fromHttpUrl("https://api.openweathermap.org/geo/1.0/direct").queryParam("q", location).queryParam("limit", 5).queryParam("appid", API_KEY).toUriString();
         try {
-            ResponseEntity<List<LocationResponseDto>> response = restTemplate.exchange(
-                    url,
-                    HttpMethod.GET,
-                    HttpEntity.EMPTY,
-                    new ParameterizedTypeReference<List<LocationResponseDto>>() {}
-            );
+            ResponseEntity<List<LocationResponseDto>> response = restTemplate.exchange(url, HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<List<LocationResponseDto>>() {
+            });
 
             return response.getBody();
+        } catch (HttpClientErrorException e) {
+            throw new InvalidApiRequestException("Client error: ");
+        } catch (HttpServerErrorException e) {
+            throw new WeatherApiException("Server error: ");
         } catch (Exception e) {
-            if (e instanceof HttpClientErrorException) {
-                throw new InvalidApiRequestException("invalid request");
-            } else if (e instanceof HttpServerErrorException) {
-                throw new WeatherApiException("Weather server not working");
-            } else {
-                throw new JsonDeserializationException("Error fetching location data" );
-            }
+            throw new JsonDeserializationException("Error deserializing response");
         }
     }
 }

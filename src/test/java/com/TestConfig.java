@@ -10,9 +10,17 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
 import java.util.Properties;
+
+
+
+@EnableWebMvc
+
+
 
 @Configuration
 @EnableJpaRepositories(basePackages = "com.repository")
@@ -67,6 +75,8 @@ public class TestConfig {
         properties.setProperty("hibernate.format_sql", "true");
         return properties;
     }
-
-
+    @Bean
+    RestTemplate restTemplate() {
+         return new RestTemplate();
+    }
 }
