@@ -1,14 +1,10 @@
 package com.exception;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public class WeatherApiException extends RuntimeException {
     private final String responseBody;
-
-    public WeatherApiException(String responseBody) {
-        super("Ошибка API погоды: "  + responseBody);
-        this.responseBody = responseBody;
-    }
-
 }

@@ -28,15 +28,14 @@ public class SignUpController {
     }
 
     @PostMapping("/signUp")
-    public String singUp(@ModelAttribute("signUpUserDto") @Validated SignUpUserDto credentials, BindingResult bindingResult, Model model) {
-        userCredentialsValidator.validate(credentials,bindingResult);
+    public String singUp(@ModelAttribute("signUpUserDto") @Validated SignUpUserDto credentials, BindingResult bindingResult) {
+        userCredentialsValidator.validate(credentials, bindingResult);
         if (bindingResult.hasErrors()) {
             return "sign-up";
         }
         try {
-            userAuthService.createUser(new UserLoginDto(credentials.getUsername(),credentials.getPassword()));
-        }
-        catch (UserAlreadyExistsException exception){
+            userAuthService.createUser(new UserLoginDto(credentials.getUsername(), credentials.getPassword()));
+        } catch (UserAlreadyExistsException exception) {
             bindingResult.rejectValue("username", "error.username", "Username already exists");
             return "sign-up";
         }

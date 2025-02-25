@@ -1,18 +1,10 @@
 package com.exception;
 
-import lombok.Setter;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-@Setter
+@RequiredArgsConstructor
+@Getter
 public class UserAlreadyExistsException extends RuntimeException {
-    private String message;
-
-    public UserAlreadyExistsException(String message) {
-        this.message = message;
-    }
-
-    @Override
-    public String getMessage() {
-        return message;
-    }
-
+    private final String message;
 }

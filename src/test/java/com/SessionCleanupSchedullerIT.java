@@ -35,7 +35,7 @@ public class SessionCleanupSchedullerIT {
     private UserRepository userRepository;
 
     @Test
-    public void expiredSessionsShouldBeCleanedUp () {
+    public void expiredSessionsShouldBeCleanedUp() {
         User user = new User("Name", "password");
         UserSession expiredSession = new UserSession(user,
                 LocalDateTime.now().minusDays(140));
@@ -51,7 +51,7 @@ public class SessionCleanupSchedullerIT {
     }
 
     @Test
-    public void validSessionsShouldNotBeCleanedUp () {
+    public void validSessionsShouldNotBeCleanedUp() {
         User user = new User("Name", "password");
         UserSession expiredSession = new UserSession(user,
                 LocalDateTime.now().plusDays(140));

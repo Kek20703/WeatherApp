@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
+
 @Repository
 public interface UserSessionRepository extends JpaRepository<UserSession, UUID> {
     @Transactional

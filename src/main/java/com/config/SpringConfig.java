@@ -27,6 +27,7 @@ public class SpringConfig implements WebMvcConfigurer {
     private final ApplicationContext applicationContext;
     @Autowired
     AuthInterceptor authInterceptor;
+
     public SpringConfig(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }

@@ -5,8 +5,8 @@ import com.entity.User;
 import com.entity.UserSession;
 import com.exception.InvalidUserSession;
 import com.exception.UserAlreadyExistsException;
-import com.repository.UserSessionRepository;
 import com.repository.UserRepository;
+import com.repository.UserSessionRepository;
 import com.util.passwordutil.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,27 +29,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void createUser(UserLoginDto credentials) {
-      Optional<User>  user = userRepository.findByLogin(credentials.username());
-      if (user.isPresent()) {
-          throw new UserAlreadyExistsException("User already exists");
-      }
-      else {
-      String hashPassword = PasswordUtil.hashPassword(credentials.password());
-      userRepository.save(new User(credentials.username(), hashPassword));
+        Optional<User> user = userRepository.findByLogin(credentials.username());
+        if (user.isPresent()) {
+            throw new UserAlreadyExistsException("User already exists");
+        } else {
+            String hashPassword = PasswordUtil.hashPassword(credentials.password());
+            userRepository.save(new User(credentials.username(), hashPassword));
         }
     }
 
     @Override
     public Optional<UserSession> login(UserLoginDto credentials) {
         Optional<User> user = userRepository.findByLogin(credentials.username());
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             return Optional.empty();
         }
-        if(!PasswordUtil.matches(credentials.password(), user.get().getPassword())){
+        if (!PasswordUtil.matches(credentials.password(), user.get().getPassword())) {
             return Optional.empty();
         }
         UserSession userSession = getSession(user.get());
-        return Optional.of(userSession) ;
+        return Optional.of(userSession);
     }
 
     @Override
@@ -59,23 +58,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(UUID sessionId) {
-    Optional<UserSession> session =  userSessionRepository.findById(sessionId);
-    if(session.isPresent()) {
-        return session.get().getUser();
-    }
-    else {
+        Optional<UserSession> session = userSessionRepository.findById(sessionId);
+        if (session.isPresent()) {
+            return session.get().getUser();
+        } else {
 
-        throw new InvalidUserSession("Current Session is invalid");
-    }
+            throw new InvalidUserSession("Current Session is invalid");
+        }
 
     }
 
     private UserSession getSession(User user) {
-    Optional<UserSession> session = userSessionRepository.findByUserAndExpiresAtAfter(user, LocalDateTime.now());
+        Optional<UserSession> session = userSessionRepository.findByUserAndExpiresAtAfter(user, LocalDateTime.now());
         return session.orElseGet(() -> createSession(user));
     }
 
-    private UserSession createSession(User user){
+    private UserSession createSession(User user) {
         UserSession session = new UserSession();
         session.setUser(user);
         session.setId(UUID.randomUUID());

@@ -1,9 +1,9 @@
 package com.entity;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import jakarta.persistence.*;
 
 import java.util.List;
 
@@ -19,12 +19,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "Login")
-    private  String login;
+    private String login;
     @Column(name = "Password")
     private String password;
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.REMOVE, CascadeType.REFRESH,CascadeType.DETACH}, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.REMOVE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<UserSession> sessions;
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.REMOVE, CascadeType.REFRESH,CascadeType.DETACH}, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.REMOVE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Location> locations;
 
     public User(String login, String password) {

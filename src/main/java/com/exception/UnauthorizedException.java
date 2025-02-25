@@ -1,18 +1,10 @@
 package com.exception;
 
-import lombok.Setter;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-@Setter
+@RequiredArgsConstructor
+@Getter
 public class UnauthorizedException extends RuntimeException{
-    private String message;
-
-    public UnauthorizedException(String message) {
-        this.message = message;
-    }
-
-    @Override
-    public String getMessage() {
-        return message;
-    }
-
+    private final String message;
 }

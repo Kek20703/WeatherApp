@@ -9,6 +9,7 @@ import org.springframework.validation.Validator;
 public class SignUpUserDTOValidator implements Validator {
     private static final String NAME_PATTERN = "^[a-zA-Z0-9]+$";
     private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d).+$";
+
     @Override
     public boolean supports(Class<?> clazz) {
         return SignUpUserDto.class.equals(clazz);
@@ -39,7 +40,7 @@ public class SignUpUserDTOValidator implements Validator {
         } else if (!dto.getPassword().equals(dto.getPasswordConfirmation())) {
             errors.rejectValue("passwordConfirmation", "passwordConfirmation.notMatch", "Passwords do not match");
         } else if (dto.getPassword().length() < 8 || dto.getPassword().length() > 20) {
-            // Ensure that the password and confirmation have the same length and criteria
+
             errors.rejectValue("passwordConfirmation", "passwordConfirmation.invalidLength", "Password confirmation must be between 8 and 20 characters long");
         }
 
