@@ -1,11 +1,7 @@
 package com.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -55,11 +51,12 @@ public class WeatherResponseDto {
     public static class Sys {
         private String country;
     }
+
     @Getter
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Coord{
+    public static class Coord {
         private BigDecimal lat;
         private BigDecimal lon;
     }

@@ -16,6 +16,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @Transactional
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {TestConfig.class})
@@ -35,6 +36,7 @@ public class UserServiceIT {
         userService.createUser(user);
 
     }
+
     @Test
     public void testUserRegistration() {
         assertTrue(userRepository.findByLogin("testUser").isPresent());

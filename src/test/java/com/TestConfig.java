@@ -17,9 +17,7 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 
-
 @EnableWebMvc
-
 
 
 @Configuration
@@ -37,15 +35,7 @@ public class TestConfig {
         dataSource.setPassword("");
         return dataSource;
     }
-//    @Bean
-//    public Flyway flyway() {
-//        Flyway flyway = Flyway.configure()
-//                .dataSource(dataSource())
-//                .locations("classpath:db/migration")
-//                .load();
-//        flyway.migrate();
-//        return flyway;
-//    }
+
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
@@ -75,8 +65,10 @@ public class TestConfig {
         properties.setProperty("hibernate.format_sql", "true");
         return properties;
     }
+
     @Bean
     RestTemplate restTemplate() {
-         return new RestTemplate();
+        return new RestTemplate();
     }
+
 }

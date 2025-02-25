@@ -19,18 +19,18 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class LocationServiceImpl implements LocationService{
+public class LocationServiceImpl implements LocationService {
     private final WeatherApiClientService weatherApiClient;
     private final LocationRepository locationRepository;
     private final LocationMapper locationMapper;
 
     @Override
     public WeatherResponseDto getWeatherForLocation(Location location) {
-      WeatherResponseDto weatherDto = weatherApiClient.getWeatherForLocation(location);
-      weatherDto.getCoord().setLat(location.getLatitude());
-      weatherDto.getCoord().setLon(location.getLongitude());
-      weatherDto.setName(location.getName());
-      return weatherDto;
+        WeatherResponseDto weatherDto = weatherApiClient.getWeatherForLocation(location);
+        weatherDto.getCoord().setLat(location.getLatitude());
+        weatherDto.getCoord().setLon(location.getLongitude());
+        weatherDto.setName(location.getName());
+        return weatherDto;
     }
 
     @Override
@@ -43,36 +43,30 @@ public class LocationServiceImpl implements LocationService{
     @Override
     @Transactional
     public void saveLocation(User user, LocationResponseDto locationDto) {
-            if(checkIfLocationExists(user, locationDto)) {
-                throw new LocationAlreadyExistsException("User already picked this location");
-            }
-            Location location = locationMapper.LocationResponseDtoToLocation(locationDto);
-            location.setUser(user);
-            locationRepository.save(location);
+        if (checkIfLocationExists(user, locationDto)) {
+            throw new LocationAlreadyExistsException("User already picked this location");
+        }
+        Location location = locationMapper.LocationResponseDtoToLocation(locationDto);
+        location.setUser(user);
+        locationRepository.save(location);
     }
 
     @Override
     @Transactional
-    public void removeLocation(User user,  LocationDeleteRequestDto locationDeleteRequest) {
-        Optional<Location> location = locationRepository.findByUserIdAndLatitudeAndLongitude(user.getId(),locationDeleteRequest.getLat(),locationDeleteRequest.getLon());
-        if(location.isEmpty()){
-           throw new LocationDoesNotExistsException("No location with this name, lat, lon were found");
+    public void removeLocation(User user, LocationDeleteRequestDto locationDeleteRequest) {
+        Optional<Location> location = locationRepository.findByUserIdAndLatitudeAndLongitude(user.getId(), locationDeleteRequest.getLat(), locationDeleteRequest.getLon());
+        if (location.isEmpty()) {
+            throw new LocationDoesNotExistsException("No location with this name, lat, lon were found");
         }
         Location locationToDelete = location.get();
         locationRepository.deleteById(locationToDelete.getId());
     }
 
     @Override
-    public List<LocationResponseDto> getAvailableLocationsByName(String locationName, User user) {
+    public List<LocationResponseDto> getAvailableLocations(String locationName, User user) {
         List<LocationResponseDto> locations = getLocationsByName(locationName);
         List<Location> addedLocations = user.getLocations();
-        locations.removeIf(locationResponseDto ->
-                addedLocations.stream().anyMatch(location ->
-                        location.getName().equals(locationResponseDto.getName()) &&
-                                location.getLatitude().compareTo(locationResponseDto.getLat()) == 0 &&
-                                location.getLongitude().compareTo(locationResponseDto.getLon()) == 0
-                )
-        );
+        locations.removeIf(locationResponseDto -> addedLocations.stream().anyMatch(location -> location.getName().equals(locationResponseDto.getName()) && location.getLatitude().compareTo(locationResponseDto.getLat()) == 0 && location.getLongitude().compareTo(locationResponseDto.getLon()) == 0));
         return locations;
     }
 
@@ -84,9 +78,8 @@ public class LocationServiceImpl implements LocationService{
         return locationName.trim().replace(" ", "-");
     }
 
-    private boolean checkIfLocationExists(User user,LocationResponseDto locationDto) {
-        Optional<Location> location = locationRepository
-                .findByUserIdAndLatitudeAndLongitude(user.getId(),locationDto.getLat(),locationDto.getLon());
+    private boolean checkIfLocationExists(User user, LocationResponseDto locationDto) {
+        Optional<Location> location = locationRepository.findByUserIdAndLatitudeAndLongitude(user.getId(), locationDto.getLat(), locationDto.getLon());
         return location.isPresent();
     }
 }

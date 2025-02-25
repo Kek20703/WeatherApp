@@ -20,17 +20,17 @@ public class LocationSearchController {
 
 
     @GetMapping("/locationSearch")
-    public String search(@RequestParam(name = "locationName" ) String locationName, Model model,
+    public String search(@RequestParam(name = "locationName") String locationName, Model model,
                          @CookieValue("SESSIONID") String sessionId) {
         User user = userService.getUser(UUID.fromString(sessionId));
 
-        List<LocationResponseDto> locations = locationService.getAvailableLocationsByName(locationName, user);
+        List<LocationResponseDto> locations = locationService.getAvailableLocations(locationName, user);
         model.addAttribute("locations", locations);
         return "search-results";
     }
 
     @PostMapping("/addLocation")
-    public String addLocation(@ModelAttribute(name = "locationDto" ) LocationResponseDto locationDto,
+    public String addLocation(@ModelAttribute(name = "locationDto") LocationResponseDto locationDto,
                               @CookieValue("SESSIONID") String sessionId) {
         User user = userService.getUser(UUID.fromString(sessionId));
         locationService.saveLocation(user, locationDto);

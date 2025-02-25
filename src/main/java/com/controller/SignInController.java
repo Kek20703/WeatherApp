@@ -22,16 +22,14 @@ import java.util.UUID;
 public class SignInController {
     private final UserService userAuthService;
 
-    private HttpServletRequest request;
-
-
     @GetMapping("/signIn")
     public String getSignInPage(@CookieValue(value = "SESSIONID", required = false) String sessionId) {
-        if(sessionId != null) {
+        if (sessionId != null) {
             return "redirect:/home";
         }
         return "sign-in";
     }
+
     @PostMapping("/signIn")
     public String signIn(@ModelAttribute UserLoginDto credentialsDto, Model model, HttpServletResponse response) {
         Optional<UserSession> session = userAuthService.login(credentialsDto);
@@ -45,11 +43,12 @@ public class SignInController {
             return "redirect:/home";
         } else {
             model.addAttribute("error", "Invalid credentials");
-            return "redirect:/signIn";
+            return "sign-in";
         }
     }
+
     @PostMapping("/logout")
-    public String logout(@CookieValue(value = "SESSIONID") String sessionId , HttpServletResponse response) {
+    public String logout(@CookieValue(value = "SESSIONID") String sessionId, HttpServletResponse response) {
         userAuthService.logout(UUID.fromString(sessionId));
         Cookie cookie = new Cookie("SESSIONID", null);
         cookie.setMaxAge(0);

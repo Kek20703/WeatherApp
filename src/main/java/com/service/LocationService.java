@@ -12,7 +12,10 @@ public interface LocationService {
     WeatherResponseDto getWeatherForLocation(Location location);
 
     void saveLocation(User user, LocationResponseDto location);
+
     void removeLocation(User user, LocationDeleteRequestDto locationDeleteRequest);
+
     List<WeatherResponseDto> getWeatherList(User user);
-    List<LocationResponseDto> getAvailableLocationsByName(String locationName, User user);
+
+    List<LocationResponseDto> getAvailableLocations(String locationName, User user);
 }
