@@ -6,26 +6,19 @@ import com.entity.UserSession;
 import com.exception.InvalidUserSession;
 import com.exception.UserAlreadyExistsException;
 import com.repository.UserRepository;
-import com.repository.UserSessionRepository;
 import com.util.passwordutil.PasswordUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final int SESSION_LIFETIME_SECONDS = 86400;
-    private final UserSessionRepository userSessionRepository;
-    private final UserRepository userRepository;
 
-    @Autowired
-    public UserServiceImpl(UserSessionRepository userSessionRepository, UserRepository userRepository) {
-        this.userSessionRepository = userSessionRepository;
-        this.userRepository = userRepository;
-    }
+    private final UserSessionService userSessionService;
+    private final UserRepository userRepository;
 
     @Override
     public void createUser(UserLoginDto credentials) {
@@ -47,18 +40,18 @@ public class UserServiceImpl implements UserService {
         if (!PasswordUtil.matches(credentials.password(), user.get().getPassword())) {
             return Optional.empty();
         }
-        UserSession userSession = getSession(user.get());
+        UserSession userSession = userSessionService.getSession(user.get());
         return Optional.of(userSession);
     }
 
     @Override
     public void logout(UUID sessionId) {
-        userSessionRepository.deleteById(sessionId);
+        userSessionService.deleteSessionById(sessionId);
     }
 
     @Override
     public User getUser(UUID sessionId) {
-        Optional<UserSession> session = userSessionRepository.findById(sessionId);
+        Optional<UserSession> session = userSessionService.findById(sessionId);
         if (session.isPresent()) {
             return session.get().getUser();
         } else {
@@ -68,19 +61,5 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    private UserSession getSession(User user) {
-        Optional<UserSession> session = userSessionRepository.findByUserAndExpiresAtAfter(user, LocalDateTime.now());
-        return session.orElseGet(() -> createSession(user));
-    }
-
-    private UserSession createSession(User user) {
-        UserSession session = new UserSession();
-        session.setUser(user);
-        session.setId(UUID.randomUUID());
-        LocalDateTime expires = LocalDateTime.now().plusSeconds(SESSION_LIFETIME_SECONDS);
-        session.setExpiresAt(expires);
-        userSessionRepository.save(session);
-        return session;///вынести в отдельный сервис
-    }
 
 }
