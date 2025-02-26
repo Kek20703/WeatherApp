@@ -14,8 +14,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<String> handleNonAuthorizedException(UnauthorizedException ex, HttpServletRequest request) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", request.getContextPath()+"/signIn" );  // указываем URL для редиректа
-        return ResponseEntity.status(HttpStatus.FOUND)  // HTTP 302
+        headers.add("Location", request.getContextPath()+"/signIn" );
+        return ResponseEntity.status(HttpStatus.FOUND)
                 .headers(headers)
                 .body("Redirecting to /signIn");
     }

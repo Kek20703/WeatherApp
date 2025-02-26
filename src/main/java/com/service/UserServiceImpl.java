@@ -25,23 +25,16 @@ public class UserServiceImpl implements UserService {
         Optional<User> user = userRepository.findByLogin(credentials.username());
         if (user.isPresent()) {
             throw new UserAlreadyExistsException("User already exists");
-        } else {
-            String hashPassword = PasswordUtil.hashPassword(credentials.password());
-            userRepository.save(new User(credentials.username(), hashPassword));
         }
+        String hashPassword = PasswordUtil.hashPassword(credentials.password());
+        userRepository.save(new User(credentials.username(), hashPassword));
     }
 
     @Override
     public Optional<UserSession> login(UserLoginDto credentials) {
-        Optional<User> user = userRepository.findByLogin(credentials.username());
-        if (user.isEmpty()) {
-            return Optional.empty();
-        }
-        if (!PasswordUtil.matches(credentials.password(), user.get().getPassword())) {
-            return Optional.empty();
-        }
-        UserSession userSession = userSessionService.getSession(user.get());
-        return Optional.of(userSession);
+        return userRepository.findByLogin(credentials.username())
+                .filter(user -> PasswordUtil.matches(credentials.password(), user.getPassword()))
+                .map(userSessionService::getSession);
     }
 
     @Override
@@ -51,15 +44,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(UUID sessionId) {
-        Optional<UserSession> session = userSessionService.findById(sessionId);
-        if (session.isPresent()) {
-            return session.get().getUser();
-        } else {
-
-            throw new InvalidUserSession("Current Session is invalid");
-        }
-
+        return userSessionService.findById(sessionId)
+                .map(UserSession::getUser)
+                .orElseThrow(() -> new InvalidUserSession("Current Session is invalid"));
     }
-
 
 }
