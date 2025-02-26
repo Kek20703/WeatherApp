@@ -8,6 +8,7 @@ import com.exception.UserAlreadyExistsException;
 import com.repository.UserRepository;
 import com.util.passwordutil.PasswordUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -22,12 +23,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void createUser(UserLoginDto credentials) {
-        Optional<User> user = userRepository.findByLogin(credentials.username());
-        if (user.isPresent()) {
+        String hashPassword = PasswordUtil.hashPassword(credentials.password());
+        try {
+            userRepository.save(new User(credentials.username(), hashPassword));
+        } catch (DataIntegrityViolationException e) {
             throw new UserAlreadyExistsException("User already exists");
         }
-        String hashPassword = PasswordUtil.hashPassword(credentials.password());
-        userRepository.save(new User(credentials.username(), hashPassword));
+
     }
 
     @Override
