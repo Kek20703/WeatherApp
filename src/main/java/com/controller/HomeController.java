@@ -19,6 +19,8 @@ import java.util.UUID;
 @Controller
 @RequiredArgsConstructor
 public class HomeController {
+    private static final String HOME_VIEW = "index";
+    private static final String HOME_REDIRECT = "redirect:/home";
     private final UserService userService;
     private final LocationService locationService;
 
@@ -29,7 +31,7 @@ public class HomeController {
         model.addAttribute("username", user.getLogin());
         model.addAttribute("weatherList", weatherList);
         model.addAttribute("locationDeleteRequest", new LocationDeleteRequestDto());
-        return "index";
+        return HOME_VIEW;
     }
 
     @PostMapping("/deleteLocation")
@@ -37,7 +39,7 @@ public class HomeController {
                                  @ModelAttribute("locationDeleteRequest") LocationDeleteRequestDto locationDeleteRequest) {
         User user = userService.getUser(UUID.fromString(sessionId));
         locationService.removeLocation(user, locationDeleteRequest);
-        return "redirect:/home";
+        return HOME_REDIRECT;
 
     }
 }

@@ -20,14 +20,17 @@ import java.util.UUID;
 @Controller
 @RequiredArgsConstructor
 public class SignInController {
+    private static final String HOME_REDIRECT = "redirect:/home";
+    private static final String SIGN_IN_REDIRECT = "redirect:signIn";
+    private static final String SIGN_IN_VIEW = "sign-in";
     private final UserService userAuthService;
 
     @GetMapping("/signIn")
     public String getSignInPage(@CookieValue(value = "SESSIONID", required = false) String sessionId) {
         if (sessionId != null) {
-            return "redirect:/home";
+            return HOME_REDIRECT;
         }
-        return "sign-in";
+        return SIGN_IN_VIEW;
     }
 
     @PostMapping("/signIn")
@@ -37,10 +40,10 @@ public class SignInController {
             Cookie sessionCookie = SessionCookieUtil.getNewSessionCookie(session.get().getId().toString());
             response.addCookie(sessionCookie);
             model.addAttribute("sessionId", session.get().getId());
-            return "redirect:/home";
+            return HOME_REDIRECT;
         } else {
             model.addAttribute("error", "Invalid credentials");
-            return "sign-in";
+            return SIGN_IN_VIEW;
         }
     }
 
@@ -49,6 +52,6 @@ public class SignInController {
         userAuthService.logout(UUID.fromString(sessionId));
         Cookie cookie = SessionCookieUtil.getEmptySessionCookie();
         response.addCookie(cookie);
-        return "redirect:signIn";
+        return SIGN_IN_REDIRECT;
     }
 }

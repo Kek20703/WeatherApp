@@ -23,6 +23,4 @@ public class SessionCookieUtil {
         cookie.setPath(COOKIE_PATH);
         return cookie;
     }
-
-
 }
