@@ -27,11 +27,4 @@ public class Location {
     private BigDecimal latitude;
     @Column(name = "Longitude")
     private BigDecimal longitude;
-
-    public Location(String name, User user, BigDecimal latitude, BigDecimal longitude) {
-        this.name = name;
-        this.user = user;
-        this.latitude = latitude;
-        this.longitude = longitude;
-    }
 }

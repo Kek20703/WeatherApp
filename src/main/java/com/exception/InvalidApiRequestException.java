@@ -3,8 +3,8 @@ package com.exception;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public class InvalidApiRequestException extends RuntimeException{
-    @Getter
     private final String message;
 }

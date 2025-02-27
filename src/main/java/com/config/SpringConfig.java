@@ -63,6 +63,7 @@ public class SpringConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/signUp", "/signIn", "/logout", "/css/**", "/js/**", "/images/**");
     }
 
+
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();

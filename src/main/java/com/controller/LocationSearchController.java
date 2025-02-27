@@ -15,9 +15,10 @@ import java.util.UUID;
 @Controller
 @RequiredArgsConstructor
 public class LocationSearchController {
+    private static final String HOME_REDIRECT = "redirect:/home";
+    private static final String SEARCH_RESULT_VIEW = "search-results";
     private final LocationService locationService;
     private final UserService userService;
-
 
     @GetMapping("/locationSearch")
     public String search(@RequestParam(name = "locationName") String locationName, Model model,
@@ -26,7 +27,7 @@ public class LocationSearchController {
 
         List<LocationResponseDto> locations = locationService.getAvailableLocations(locationName, user);
         model.addAttribute("locations", locations);
-        return "search-results";
+        return SEARCH_RESULT_VIEW;
     }
 
     @PostMapping("/addLocation")
@@ -34,6 +35,6 @@ public class LocationSearchController {
                               @CookieValue("SESSIONID") String sessionId) {
         User user = userService.getUser(UUID.fromString(sessionId));
         locationService.saveLocation(user, locationDto);
-        return "redirect:/home";
+        return HOME_REDIRECT;
     }
 }
