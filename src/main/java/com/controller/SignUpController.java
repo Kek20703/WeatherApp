@@ -2,7 +2,6 @@ package com.controller;
 
 import com.dto.request.SignUpUserDto;
 import com.dto.request.UserLoginDto;
-import com.exception.UserAlreadyExistsException;
 import com.service.UserService;
 import com.util.validator.SignUpUserDTOValidator;
 import lombok.RequiredArgsConstructor;
@@ -34,12 +33,7 @@ public class SignUpController {
         if (bindingResult.hasErrors()) {
             return SIGN_UP_VIEW;
         }
-        try {
-            userAuthService.createUser(new UserLoginDto(credentials.getUsername(), credentials.getPassword()));
-        } catch (UserAlreadyExistsException exception) {
-            bindingResult.rejectValue("username", "error.username", "Username already exists");
-            return SIGN_UP_VIEW;
-        }
+        userAuthService.createUser(new UserLoginDto(credentials.getUsername(), credentials.getPassword()));
         return SIGN_UP_VIEW;
     }
 }

@@ -10,12 +10,12 @@ import com.exception.LocationDoesNotExistsException;
 import com.mapper.LocationMapper;
 import com.repository.LocationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -43,23 +43,24 @@ public class LocationServiceImpl implements LocationService {
     @Override
     @Transactional
     public void saveLocation(User user, LocationResponseDto locationDto) {
-        if (checkIfLocationExists(user, locationDto)) {
+        Location location = locationMapper.LocationResponseDtoToLocation(locationDto);
+        try {
+            location.setUser(user);
+            locationRepository.save(location);
+        } catch (DataIntegrityViolationException e) {
             throw new LocationAlreadyExistsException("User already picked this location");
         }
-        Location location = locationMapper.LocationResponseDtoToLocation(locationDto);
-        location.setUser(user);
-        locationRepository.save(location);
+
     }
 
     @Override
-    @Transactional
     public void removeLocation(User user, LocationDeleteRequestDto locationDeleteRequest) {
-        Optional<Location> location = locationRepository.findByUserIdAndLatitudeAndLongitude(user.getId(), locationDeleteRequest.getLat(), locationDeleteRequest.getLon());
-        if (location.isEmpty()) {
-            throw new LocationDoesNotExistsException("No location with this name, lat, lon were found");
+        try {
+            locationRepository.deleteByUserIdAndLatitudeAndLongitude(user.getId(), locationDeleteRequest.getLat(), locationDeleteRequest.getLon());
+        } catch (DataIntegrityViolationException e) {
+            throw new LocationDoesNotExistsException("Location doesn't exist");
         }
-        Location locationToDelete = location.get();
-        locationRepository.deleteById(locationToDelete.getId());
+
     }
 
     @Override
@@ -78,8 +79,5 @@ public class LocationServiceImpl implements LocationService {
         return locationName.trim().replace(" ", "-");
     }
 
-    private boolean checkIfLocationExists(User user, LocationResponseDto locationDto) {
-        Optional<Location> location = locationRepository.findByUserIdAndLatitudeAndLongitude(user.getId(), locationDto.getLat(), locationDto.getLon());
-        return location.isPresent();
-    }
+
 }
