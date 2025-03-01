@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequiredArgsConstructor
 public class SignUpController {
     private static final String SIGN_UP_VIEW = "sign-up";
+    private static final String SIGN_IN_REDIRECT = "redirect:signIn";
     private final UserService userAuthService;
     private final SignUpUserDTOValidator userCredentialsValidator;
 
@@ -34,6 +35,6 @@ public class SignUpController {
             return SIGN_UP_VIEW;
         }
         userAuthService.createUser(new UserLoginDto(credentials.getUsername(), credentials.getPassword()));
-        return SIGN_UP_VIEW;
+        return SIGN_IN_REDIRECT;
     }
 }

@@ -1,6 +1,7 @@
 package com.config;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import org.flywaydb.core.Flyway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -22,12 +23,13 @@ public class JpaConfig {
     private static final Dotenv dotenv = Dotenv.load();
     private static final String dbUser = dotenv.get("DB_USER");
     private static final String dbPassword = dotenv.get("DB_PASSWORD");
-
+    private static final String dbUrl = dotenv.get("DB_URL");
+    private static final String dbDriver = dotenv.get("DB_DRIVER");
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/mydatabase");
+        dataSource.setDriverClassName(dbDriver);
+        dataSource.setUrl(dbUrl);
         dataSource.setUsername(dbUser);
         dataSource.setPassword(dbPassword);
         return dataSource;
@@ -54,5 +56,16 @@ public class JpaConfig {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
         return transactionManager;
+    }
+
+
+    @Bean
+    @Profile("dev")
+    public Flyway flyway() {
+        Flyway flyway = Flyway.configure()
+                .dataSource(dataSource())
+                .load();
+        flyway.migrate();
+        return flyway;
     }
 }
