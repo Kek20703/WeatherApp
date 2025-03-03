@@ -42,6 +42,8 @@ public class SignInController {
             model.addAttribute("sessionId", session.get().getId());
             return HOME_REDIRECT;
         } else {
+            // TODO: пол логике вроде все ок. Но возникают проблемы с пониманием такой ошибки. Если нет сессии = неверные креды
+            //   возможно стоит немного поменять либо определение неверности (выбросив исключение например)
             model.addAttribute("error", "Invalid credentials");
             return SIGN_IN_VIEW;
         }
@@ -49,6 +51,8 @@ public class SignInController {
 
     @PostMapping("/logout")
     public String logout(@CookieValue(value = "SESSIONID") String sessionId, HttpServletResponse response) {
+        // TODO: userAuthService плохое название для сервиса, так как сам класс имеет название просто UserService.
+        //  старайся использовать создающие непоняток нейминги класса/интерфейса - объекта
         userAuthService.logout(UUID.fromString(sessionId));
         Cookie cookie = SessionCookieUtil.getEmptySessionCookie();
         response.addCookie(cookie);

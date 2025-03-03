@@ -37,6 +37,7 @@ public class AuthInterceptor implements HandlerInterceptor {
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElse(null);
+        // TODO: может ли быть кейс, когда прислали мертвую сессию?
         if (sessionId != null && sessionRepository.findById(UUID.fromString(sessionId)).isPresent()) {
             return true;
         } else {

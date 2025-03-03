@@ -23,12 +23,20 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class RestTemplateWeatherApiClientService implements WeatherApiClientService {
+    // TODO: уже вызывал в другом месте, стоит сделать загрузку конфигурации один раз и использовать в нужных местах
     private static final Dotenv dotenv = Dotenv.load();
     private static final String API_KEY = dotenv.get("API_KEY");
     private final RestTemplate restTemplate;
 
     public WeatherResponseDto getWeatherForLocation(Location location) {
-        String url = UriComponentsBuilder.fromHttpUrl("https://api.openweathermap.org/data/2.5/weather").queryParam("lon", location.getLongitude()).queryParam("lat", location.getLatitude()).queryParam("appid", API_KEY).queryParam("units", "metric").toUriString();
+        // TODO: строки вынести в константы
+        // TODO: очень-очень длинная строка
+        String url1 = "https://api.openweathermap.org/data/2.5/weather";
+        String url = UriComponentsBuilder.fromHttpUrl(url1)
+                .queryParam("lon", location.getLongitude())
+                .queryParam("lat", location.getLatitude())
+                .queryParam("appid", API_KEY)
+                .queryParam("units", "metric").toUriString();
         try {
             ResponseEntity<WeatherResponseDto> response = restTemplate.getForEntity(url, WeatherResponseDto.class);
             return response.getBody();

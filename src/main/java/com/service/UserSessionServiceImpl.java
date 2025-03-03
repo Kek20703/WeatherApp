@@ -16,6 +16,8 @@ public class UserSessionServiceImpl implements UserSessionService {
     private static final int SESSION_LIFETIME_SECONDS = 86400;
     private final UserSessionRepository userSessionRepository;
 
+    // TODO: важно понимать, что тут происходит селект и инсерт, конкретно в данном случае все ок, так как происходит
+    //  только одно изменение, но потенциально можно пропустить создание транзакции
     @Override
     public UserSession getSession(User user) {
         Optional<UserSession> session = userSessionRepository.findByUserAndExpiresAtAfter(user, LocalDateTime.now());
