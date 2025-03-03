@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     public Optional<UserSession> login(UserLoginDto credentials) {
         return userRepository.findByLogin(credentials.username())
                 .filter(user -> PasswordUtil.matches(credentials.password(), user.getPassword()))
-                .map(userSessionService::getSession);
+                .map(userSessionService::getSessionByUser);
     }
 
     @Override

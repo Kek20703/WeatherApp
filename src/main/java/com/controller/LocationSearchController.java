@@ -2,8 +2,10 @@ package com.controller;
 
 import com.dto.response.LocationResponseDto;
 import com.entity.User;
+import com.entity.UserSession;
 import com.service.LocationService;
 import com.service.UserService;
+import com.service.UserSessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,13 +21,14 @@ public class LocationSearchController {
     private static final String SEARCH_RESULT_VIEW = "search-results";
     private final LocationService locationService;
     private final UserService userService;
+    private final UserSessionService userSessionService;
 
     @GetMapping("/locationSearch")
     public String search(@RequestParam(name = "locationName") String locationName, Model model,
                          @CookieValue("SESSIONID") String sessionId) {
-        User user = userService.getUser(UUID.fromString(sessionId));
-
-        List<LocationResponseDto> locations = locationService.getAvailableLocations(locationName, user);
+        UserSession session = userSessionService.getSessionByUserId(UUID.fromString(sessionId));
+        List<LocationResponseDto> locations =
+                locationService.getAvailableLocations(locationName, session.getUser());
         model.addAttribute("locations", locations);
         return SEARCH_RESULT_VIEW;
     }
