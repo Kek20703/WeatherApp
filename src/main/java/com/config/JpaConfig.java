@@ -2,6 +2,7 @@ package com.config;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import org.flywaydb.core.Flyway;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -20,11 +21,13 @@ import java.util.Properties;
 @ComponentScan(basePackages = "com")
 @Profile("dev")
 public class JpaConfig {
+
     private static final Dotenv dotenv = Dotenv.load();
     private static final String dbUser = dotenv.get("DB_USER");
     private static final String dbPassword = dotenv.get("DB_PASSWORD");
     private static final String dbUrl = dotenv.get("DB_URL");
     private static final String dbDriver = dotenv.get("DB_DRIVER");
+
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();

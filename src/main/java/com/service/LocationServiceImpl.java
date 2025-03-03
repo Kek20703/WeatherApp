@@ -63,11 +63,15 @@ public class LocationServiceImpl implements LocationService {
 
     }
 
+    // TODO: насколько я понял, этот метод фильтрует выдачу, чтобы в ней не было уже добавленных локаций. Так надо?
     @Override
     public List<LocationResponseDto> getAvailableLocations(String locationName, User user) {
         List<LocationResponseDto> locations = getLocationsByName(locationName);
         List<Location> addedLocations = user.getLocations();
-        locations.removeIf(locationResponseDto -> addedLocations.stream().anyMatch(location -> location.getName().equals(locationResponseDto.getName()) && location.getLatitude().compareTo(locationResponseDto.getLat()) == 0 && location.getLongitude().compareTo(locationResponseDto.getLon()) == 0));
+        // TODO: очень-очень длинная строка). стримы это хорошо - но не нужно обязательно все делать в одн строчку
+        //  можно вынести внутрянку в отдельный метод
+        locations.removeIf(locationResponseDto -> addedLocations.stream()
+                .anyMatch(location -> location.compare(locationResponseDto)));
         return locations;
     }
 

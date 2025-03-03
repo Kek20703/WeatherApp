@@ -23,6 +23,8 @@ public class LocationSearchController {
     @GetMapping("/locationSearch")
     public String search(@RequestParam(name = "locationName") String locationName, Model model,
                          @CookieValue("SESSIONID") String sessionId) {
+        // TODO: немного путает, что тут вывзается userService с передачей sessionId для получения юзера
+        //  не кажется ли более понятным достать сессию из sessionService и достать из нее юзера
         User user = userService.getUser(UUID.fromString(sessionId));
 
         List<LocationResponseDto> locations = locationService.getAvailableLocations(locationName, user);

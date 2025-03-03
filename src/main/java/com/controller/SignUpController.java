@@ -22,6 +22,7 @@ public class SignUpController {
     private final SignUpUserDTOValidator userCredentialsValidator;
 
 
+    // TODO: что будет если залогиненный юзер перейдет на /signUp?
     @GetMapping("/signUp")
     public String getSignUpPage(@ModelAttribute("userRegistrationDto") SignUpUserDto userRegistrationDto, Model model) {
         model.addAttribute("signUpUserDto", SignUpUserDto.builder().build());

@@ -15,6 +15,8 @@ public class SignUpUserDTOValidator implements Validator {
         return SignUpUserDto.class.equals(clazz);
     }
 
+    // TODO: очень большой метод. Хорошей практикой является разделение на более маленькие методы в простом случае
+    //  в идеале один валидатор должен делать одну валидацию (тут это будет оверкилом, так что разделения на методы достаточно)
     @Override
     public void validate(Object target, Errors errors) {
         SignUpUserDto dto = (SignUpUserDto) target;
@@ -33,6 +35,12 @@ public class SignUpUserDTOValidator implements Validator {
 //            errors.rejectValue("password", "password.invalidLength", "Password must be between 8 and 20 characters long");
         } else if (!dto.getPassword().matches(PASSWORD_PATTERN)) {
 //            errors.rejectValue("password", "password.invalidPattern", "Password must contain at least one letter and one digit");
+        }
+
+        if (dto.getPasswordConfirmation() == null || dto.getPasswordConfirmation().isEmpty()) {
+            errors.rejectValue("passwordConfirmation", "passwordConfirmation.empty", "Password confirmation cannot be empty");
+        } else if (!dto.getPassword().equals(dto.getPasswordConfirmation())) {
+            errors.rejectValue("passwordConfirmation", "passwordConfirmation.notMatch", "Passwords do not match");
         }
 
         if (dto.getPasswordConfirmation() == null || dto.getPasswordConfirmation().isEmpty()) {
