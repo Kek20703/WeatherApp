@@ -1,6 +1,6 @@
 package com.config;
 
-import io.github.cdimascio.dotenv.Dotenv;
+import lombok.RequiredArgsConstructor;
 import org.flywaydb.core.Flyway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -18,20 +18,19 @@ import java.util.Properties;
 @Configuration
 @EnableJpaRepositories(basePackages = "com.repository")
 @ComponentScan(basePackages = "com")
+@RequiredArgsConstructor
 @Profile("dev")
 public class JpaConfig {
-    private static final Dotenv dotenv = Dotenv.load();
-    private static final String dbUser = dotenv.get("DB_USER");
-    private static final String dbPassword = dotenv.get("DB_PASSWORD");
-    private static final String dbUrl = dotenv.get("DB_URL");
-    private static final String dbDriver = dotenv.get("DB_DRIVER");
+
+    private final EnvConfig envConfig;
+
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(dbDriver);
-        dataSource.setUrl(dbUrl);
-        dataSource.setUsername(dbUser);
-        dataSource.setPassword(dbPassword);
+        dataSource.setDriverClassName(envConfig.getDbDriver());
+        dataSource.setUrl(envConfig.getDbUrl());
+        dataSource.setUsername(envConfig.getDbUser());
+        dataSource.setPassword(envConfig.getDbPassword());
         return dataSource;
     }
 

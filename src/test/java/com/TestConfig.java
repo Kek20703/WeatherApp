@@ -1,5 +1,6 @@
 package com;
 
+import com.config.EnvConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -69,6 +70,11 @@ public class TestConfig {
     @Bean
     RestTemplate restTemplate() {
         return new RestTemplate();
+    }
+
+    @Bean
+    EnvConfig envConfig() {
+        return new EnvConfig();
     }
 
 }
