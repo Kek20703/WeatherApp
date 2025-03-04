@@ -1,5 +1,6 @@
 package com.entity;
 
+import com.dto.response.LocationResponseDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
@@ -35,6 +36,12 @@ public class Location {
     private BigDecimal latitude;
     @Column(name = "Longitude")
     private BigDecimal longitude;
+
+    public boolean compare(LocationResponseDto locationResponseDto) {
+        return this.name.equals(locationResponseDto.getName()) &&
+                this.latitude.compareTo(locationResponseDto.getLat()) == 0 &&
+                this.longitude.compareTo(locationResponseDto.getLon()) == 0;
+    }
 
     public void setLatitude(BigDecimal latitude) {
         if (latitude != null) {

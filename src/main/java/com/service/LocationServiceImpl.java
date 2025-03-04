@@ -56,7 +56,8 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public void removeLocation(User user, LocationDeleteRequestDto locationDeleteRequest) {
         try {
-            locationRepository.deleteByUserIdAndLatitudeAndLongitude(user.getId(), locationDeleteRequest.getLat(), locationDeleteRequest.getLon());
+            locationRepository.deleteByUserIdAndLatitudeAndLongitude(user.getId(),
+                    locationDeleteRequest.getLat(), locationDeleteRequest.getLon());
         } catch (DataIntegrityViolationException e) {
             throw new LocationDoesNotExistsException("Location doesn't exist");
         }
@@ -67,7 +68,8 @@ public class LocationServiceImpl implements LocationService {
     public List<LocationResponseDto> getAvailableLocations(String locationName, User user) {
         List<LocationResponseDto> locations = getLocationsByName(locationName);
         List<Location> addedLocations = user.getLocations();
-        locations.removeIf(locationResponseDto -> addedLocations.stream().anyMatch(location -> location.getName().equals(locationResponseDto.getName()) && location.getLatitude().compareTo(locationResponseDto.getLat()) == 0 && location.getLongitude().compareTo(locationResponseDto.getLon()) == 0));
+        locations.removeIf(locationResponseDto -> addedLocations.stream()
+                .anyMatch(location -> location.compare(locationResponseDto)));
         return locations;
     }
 
