@@ -18,27 +18,38 @@ public class SignUpUserDTOValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         SignUpUserDto dto = (SignUpUserDto) target;
+        validateUsername(dto, errors);
+        validatePassword(dto, errors);
+        validatePasswordConfirmation(dto, errors);
+    }
 
+    private void validateUsername(SignUpUserDto dto, Errors errors) {
         if (dto.getUsername() == null || dto.getUsername().isEmpty()) {
             errors.rejectValue("username", "username.empty", "Username cannot be empty");
         } else if (dto.getUsername().length() < 3) {
-//            errors.rejectValue("username", "username.tooShort", "Username must be at least 3 characters long");
+            errors.rejectValue("username", "username.tooShort", "Username must be at least 3 characters long");
         } else if (!dto.getUsername().matches(NAME_PATTERN)) {
-//            errors.rejectValue("username", "username.invalid", "Username must contain only Latin letters and digits");
+            errors.rejectValue("username", "username.invalid", "Username must contain only Latin letters and digits");
         }
+    }
 
+    private void validatePassword(SignUpUserDto dto, Errors errors) {
         if (dto.getPassword() == null || dto.getPassword().isEmpty()) {
             errors.rejectValue("password", "password.empty", "Password cannot be empty");
         } else if (dto.getPassword().length() < 8 || dto.getPassword().length() > 20) {
-//            errors.rejectValue("password", "password.invalidLength", "Password must be between 8 and 20 characters long");
+            errors.rejectValue("password", "password.invalidLength", "Password must be between 8 and 20 characters long");
         } else if (!dto.getPassword().matches(PASSWORD_PATTERN)) {
-//            errors.rejectValue("password", "password.invalidPattern", "Password must contain at least one letter and one digit");
+            errors.rejectValue("password", "password.invalidPattern", "Password must contain at least one letter and one digit");
         }
+    }
 
+    private void validatePasswordConfirmation(SignUpUserDto dto, Errors errors) {
         if (dto.getPasswordConfirmation() == null || dto.getPasswordConfirmation().isEmpty()) {
             errors.rejectValue("passwordConfirmation", "passwordConfirmation.empty", "Password confirmation cannot be empty");
         } else if (!dto.getPassword().equals(dto.getPasswordConfirmation())) {
             errors.rejectValue("passwordConfirmation", "passwordConfirmation.notMatch", "Passwords do not match");
         }
     }
+
+
 }
