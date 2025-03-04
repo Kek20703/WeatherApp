@@ -2,7 +2,7 @@ package com.service;
 
 import com.entity.User;
 import com.entity.UserSession;
-import com.exception.UnauthorizedException;
+import com.exception.InvalidUserSession;
 import com.repository.UserSessionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,17 +28,18 @@ public class UserSessionServiceImpl implements UserSessionService {
         userSessionRepository.deleteById(sessionId);
     }
 
-    @Override
-    public Optional<UserSession> findById(UUID sessionId) {
-        return userSessionRepository.findById(sessionId);
-    }
 
     @Override
-    public UserSession getSessionByUserId(UUID userId) {
+    public UserSession getById(UUID userId) {
         return userSessionRepository.findById(userId)
-                .orElseThrow(() -> new UnauthorizedException("Session is not valid"));
+                .orElseThrow(() -> new InvalidUserSession("Session is not valid"));
     }
 
+    @Override
+    public boolean isSessionValid(UUID sessionId) {
+        Optional<UserSession> session = userSessionRepository.findByIdAndExpiresAtAfter(sessionId, LocalDateTime.now());
+        return session.isPresent();
+    }
 
     private UserSession createAndGetSession(User user) {
         UserSession session = new UserSession();

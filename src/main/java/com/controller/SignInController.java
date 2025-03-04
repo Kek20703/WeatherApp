@@ -23,7 +23,7 @@ public class SignInController {
     private static final String HOME_REDIRECT = "redirect:/home";
     private static final String SIGN_IN_REDIRECT = "redirect:signIn";
     private static final String SIGN_IN_VIEW = "sign-in";
-    private final UserService userAuthService;
+    private final UserService userService;
 
     @GetMapping("/signIn")
     public String getSignInPage(@CookieValue(value = "SESSIONID", required = false) String sessionId) {
@@ -35,7 +35,7 @@ public class SignInController {
 
     @PostMapping("/signIn")
     public String signIn(@ModelAttribute UserLoginDto credentialsDto, Model model, HttpServletResponse response) {
-        Optional<UserSession> session = userAuthService.login(credentialsDto);
+        Optional<UserSession> session = userService.login(credentialsDto);
         if (session.isPresent()) {
             Cookie sessionCookie = SessionCookieUtil.getNewSessionCookie(session.get().getId().toString());
             response.addCookie(sessionCookie);
@@ -49,7 +49,7 @@ public class SignInController {
 
     @PostMapping("/logout")
     public String logout(@CookieValue(value = "SESSIONID") String sessionId, HttpServletResponse response) {
-        userAuthService.logout(UUID.fromString(sessionId));
+        userService.logout(UUID.fromString(sessionId));
         Cookie cookie = SessionCookieUtil.getEmptySessionCookie();
         response.addCookie(cookie);
         return SIGN_IN_REDIRECT;

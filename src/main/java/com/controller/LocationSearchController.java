@@ -26,7 +26,7 @@ public class LocationSearchController {
     @GetMapping("/locationSearch")
     public String search(@RequestParam(name = "locationName") String locationName, Model model,
                          @CookieValue("SESSIONID") String sessionId) {
-        UserSession session = userSessionService.getSessionByUserId(UUID.fromString(sessionId));
+        UserSession session = userSessionService.getById(UUID.fromString(sessionId));
         List<LocationResponseDto> locations =
                 locationService.getAvailableLocations(locationName, session.getUser());
         model.addAttribute("locations", locations);

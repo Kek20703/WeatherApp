@@ -24,6 +24,8 @@ public interface UserSessionRepository extends JpaRepository<UserSession, UUID> 
 
     Optional<UserSession> findByUserAndExpiresAtAfter(User user, LocalDateTime now);
 
+    Optional<UserSession> findByIdAndExpiresAtAfter(UUID uuid, LocalDateTime now);
+
     Optional<UserSession> findById(UUID id);
 
 }

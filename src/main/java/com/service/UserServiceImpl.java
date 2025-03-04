@@ -3,7 +3,6 @@ package com.service;
 import com.dto.request.UserLoginDto;
 import com.entity.User;
 import com.entity.UserSession;
-import com.exception.InvalidUserSession;
 import com.exception.UserAlreadyExistsException;
 import com.repository.UserRepository;
 import com.util.passwordutil.PasswordUtil;
@@ -46,9 +45,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(UUID sessionId) {
-        return userSessionService.findById(sessionId)
-                .map(UserSession::getUser)
-                .orElseThrow(() -> new InvalidUserSession("Current Session is invalid"));
+        return userSessionService.getById(sessionId).getUser();
     }
 
 }
