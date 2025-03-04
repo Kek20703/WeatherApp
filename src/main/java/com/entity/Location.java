@@ -1,30 +1,63 @@
 package com.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "locations")
+@Table(name = "locations", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"UserId", "Latitude", "Longitude"})})
 @Getter
-@Setter
 @NoArgsConstructor
 public class Location {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    @Setter
     private int id;
     @Column(name = "Name")
     private String name;
     @ManyToOne
-    @JoinColumn(name = "UserId", nullable = false)
+    @JoinColumn(name = "UserId", nullable = false, foreignKey = @ForeignKey(name = "fk_user"))
     private User user;
     @Column(name = "Latitude")
     private BigDecimal latitude;
     @Column(name = "Longitude")
     private BigDecimal longitude;
+
+    public void setLatitude(BigDecimal latitude) {
+        if (latitude != null) {
+            this.latitude = latitude;
+        }
+
+    }
+
+    public void setLongitude(BigDecimal longitude) {
+        if (longitude != null) {
+            this.longitude = longitude;
+        }
+    }
+
+    public void setUser(User user) {
+        if (user != null) {
+            this.user = user;
+        }
+    }
+
+    public void setName(String name) {
+        if (name != null) {
+            this.name = name;
+        }
+    }
 }
