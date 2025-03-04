@@ -1,11 +1,11 @@
 package com.interceptor;
 
 import com.exception.UnauthorizedException;
-import com.repository.UserSessionRepository;
+import com.service.UserSessionService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -15,16 +15,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Component
+@RequiredArgsConstructor
 public class AuthInterceptor implements HandlerInterceptor {
-    private final UserSessionRepository sessionRepository;
+
+    private final UserSessionService userSessionService;
     private static final List<String> PUBLIC_ENDPOINTS = List.of(
             "/signUp", "/signIn", "/logout",
             "/css/", "/js/", "/images/"
     );
-    @Autowired
-    public AuthInterceptor(UserSessionRepository sessionRepository) {
-        this.sessionRepository = sessionRepository;
-    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -37,7 +35,7 @@ public class AuthInterceptor implements HandlerInterceptor {
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElse(null);
-        if (sessionId != null && sessionRepository.findById(UUID.fromString(sessionId)).isPresent()) {
+        if (sessionId != null && userSessionService.isSessionValid(UUID.fromString(sessionId))) {
             return true;
         } else {
             throw new UnauthorizedException("Not authorized");
