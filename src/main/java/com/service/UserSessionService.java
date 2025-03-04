@@ -13,4 +13,5 @@ public interface UserSessionService {
     UserSession getById(UUID userId);
 
     boolean isSessionValid(UUID sessionId);
+
 }

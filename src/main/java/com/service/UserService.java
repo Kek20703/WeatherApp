@@ -12,7 +12,5 @@ public interface UserService {
 
     Optional<UserSession> login(UserLoginDto credentials);
 
-    void logout(UUID sessionId);
-
     User getUser(UUID sessionId);
 }

@@ -39,11 +39,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void logout(UUID sessionId) {
-        userSessionService.deleteSessionById(sessionId);
-    }
-
-    @Override
     public User getUser(UUID sessionId) {
         return userSessionService.getById(sessionId).getUser();
     }

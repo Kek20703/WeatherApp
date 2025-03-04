@@ -3,6 +3,7 @@ package com.controller;
 import com.dto.request.UserLoginDto;
 import com.entity.UserSession;
 import com.service.UserService;
+import com.service.UserSessionService;
 import com.util.SessionCookieUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,6 +25,7 @@ public class SignInController {
     private static final String SIGN_IN_REDIRECT = "redirect:signIn";
     private static final String SIGN_IN_VIEW = "sign-in";
     private final UserService userService;
+    private final UserSessionService userSessionService;
 
     @GetMapping("/signIn")
     public String getSignInPage(@CookieValue(value = "SESSIONID", required = false) String sessionId) {
@@ -49,7 +51,7 @@ public class SignInController {
 
     @PostMapping("/logout")
     public String logout(@CookieValue(value = "SESSIONID") String sessionId, HttpServletResponse response) {
-        userService.logout(UUID.fromString(sessionId));
+        userSessionService.deleteSessionById(UUID.fromString(sessionId));
         Cookie cookie = SessionCookieUtil.getEmptySessionCookie();
         response.addCookie(cookie);
         return SIGN_IN_REDIRECT;
